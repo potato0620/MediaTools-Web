@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { GlobalMessage } from "@/components";
+import GlobalMessage from "@/components/GlobalMessage.vue";
 </script>
 
 <style scoped>
