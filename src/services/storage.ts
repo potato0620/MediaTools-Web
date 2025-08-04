@@ -26,7 +26,7 @@ export const StorageService = {
 
   async Delete(storage_type: string, path: string): Promise<FileInfo> {
     return await api.delete(`/storage/${storage_type}/delete`, {
-      params: { path },
+      data: { path },
     });
   },
 
