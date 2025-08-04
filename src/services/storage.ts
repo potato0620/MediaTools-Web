@@ -1,4 +1,4 @@
-import api from "@/service/api";
+import api from "@/services/api";
 import { type StorageProviderInterface, type FileInfo } from "@/types";
 
 export const StorageService = {

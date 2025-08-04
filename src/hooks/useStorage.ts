@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { StorageService } from "@/service/storage";
+import { StorageService } from "@/services/storage";
 import { showSuccess, showError } from "@/utils/message";
 import type { StorageProviderInterface, FileInfo } from "@/types";
 
