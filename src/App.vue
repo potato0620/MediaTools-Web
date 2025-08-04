@@ -1,39 +1,45 @@
 <template>
-  <v-layout class="rounded rounded-md border">
-    <v-navigation-drawer>
-      <h1 class="app-title">MediaTools</h1>
-      <v-list nav>
-        <v-list-item title="MediaTools" link></v-list-item>
+  <v-app>
+    <v-navigation-drawer permanent>
+      <v-list>
+        <v-list-item
+          prepend-icon="mdi-view-dashboard"
+          title="MediaTools"
+          subtitle="下一代媒体刮削/整理工具"
+        />
+        <v-divider />
+        <v-list-item
+          prepend-icon="mdi-database"
+          title="仪表盘"
+          :to="{ name: 'DashBoard' }"
+          link
+        />
+        <v-list-item
+          prepend-icon="mdi-database"
+          title="存储管理"
+          :to="{ name: 'Storage' }"
+          link
+        />
       </v-list>
     </v-navigation-drawer>
 
-    <!-- title="MediaTools" -->
-    <v-app-bar></v-app-bar>
+    <v-app-bar>
+      <v-app-bar-title>MediaTools - 媒体工具</v-app-bar-title>
+    </v-app-bar>
 
-    <v-main class="d-flex align-center justify-center" height="300">
-      <v-container>
-        <v-sheet
-          border="dashed md"
-          color="surface-light"
-          height="200"
-          rounded="lg"
-          width="100%"
-        ></v-sheet>
-      </v-container>
+    <v-main>
+      <router-view />
     </v-main>
-  </v-layout>
+
+    <!-- 全局消息组件 -->
+    <GlobalMessage />
+  </v-app>
 </template>
 
 <script lang="ts" setup>
-//
+import { GlobalMessage } from "@/components";
 </script>
 
 <style scoped>
-.app-title {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-  margin: 10px 0;
-  /* padding: 16px; */
-}
+/* 全局样式 */
 </style>
