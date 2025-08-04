@@ -168,7 +168,7 @@ export const useFileOperations = (
     if (!selectedFile.value) return;
 
     try {
-      await StorageService.Cpoy(
+      await StorageService.Copy(
         currentProvider(),
         selectedFile.value.path,
         copyDestProvider.value,

@@ -30,7 +30,7 @@ export const StorageService = {
     });
   },
 
-  async Cpoy(
+  async Copy(
     src_storage_type: string,
     src_path: string,
     dest_storage_type: string,
