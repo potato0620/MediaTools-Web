@@ -5,6 +5,7 @@ import { ref, reactive } from "vue";
  */
 export enum DialogType {
   MEDIA_RECOGNITION = "media-recognition",
+  LOG = "log",
   // 可以扩展其他弹窗类型
   // USER_PROFILE = 'user-profile',
   // SETTINGS = 'settings',
@@ -108,6 +109,10 @@ export function useGlobalDialogs() {
     openDialog(DialogType.MEDIA_RECOGNITION, {}, handlers);
   };
 
+  const openLogDialog = (handlers?: DialogEventHandlers) => {
+    openDialog(DialogType.LOG, {}, handlers);
+  };
+
   return {
     // 状态
     activeDialog: globalActiveDialog,
@@ -121,5 +126,6 @@ export function useGlobalDialogs() {
 
     // 特定弹窗方法
     openMediaRecognitionDialog,
+    openLogDialog,
   };
 }
