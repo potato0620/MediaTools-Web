@@ -31,6 +31,9 @@
       <router-view />
     </v-main>
 
+    <!-- 全局弹窗容器 -->
+    <GlobalDialogs />
+
     <!-- 全局消息组件 -->
     <GlobalMessage />
   </v-app>
@@ -38,6 +41,31 @@
 
 <script lang="ts" setup>
 import GlobalMessage from "@/components/GlobalMessage.vue";
+import AppHeader from "@/components/AppHeader.vue";
+import GlobalDialogs from "@/components/GlobalDialogs.vue";
+import { useGlobalDialogs } from "@/hooks";
+import type { MediaItem } from "@/types/media";
+
+// 使用全局弹窗管理
+const { openMediaRecognitionDialog } = useGlobalDialogs();
+
+// 处理媒体识别请求
+const handleMediaRecognition = () => {
+  console.log("打开媒体识别对话框");
+
+  openMediaRecognitionDialog({
+    onSuccess: (result: MediaItem) => {
+      console.log("识别成功:", result);
+      // 可以在这里添加全局的成功处理逻辑
+    },
+    onCancel: () => {
+      console.log("取消识别");
+    },
+    onClose: () => {
+      console.log("关闭弹窗");
+    },
+  });
+};
 </script>
 
 <style scoped>
