@@ -29,6 +29,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import { useThemeManager } from "@/hooks";
 
 // 按钮动作类型定义
 interface HeaderAction {
@@ -54,6 +55,9 @@ const emit = defineEmits<Emits>();
 // 动态加载状态
 const loadingStates = ref<Record<string, boolean>>({});
 
+// 使用主题管理hook
+const { currentThemeConfig, toggleTheme } = useThemeManager();
+
 // 头部按钮配置
 const headerActions = computed<HeaderAction[]>(() => [
   {
@@ -64,6 +68,14 @@ const headerActions = computed<HeaderAction[]>(() => [
     variant: "elevated",
     loading: loadingStates.value["media-recognition"],
     action: "media-recognition",
+  },
+  {
+    id: "theme-switch",
+    text: currentThemeConfig.value.text,
+    icon: currentThemeConfig.value.icon,
+    color: "primary",
+    variant: "elevated",
+    action: "theme-switch",
   },
 ]);
 
@@ -77,6 +89,10 @@ const handleAction = (action: HeaderAction) => {
   // 发送对应的事件
   if (action.action === "media-recognition") {
     emit("media-recognition");
+  } else if (action.action === "theme-switch") {
+    // 切换主题
+    toggleTheme();
+    return;
   } else {
     // 通用动作事件，可以在父组件中处理其他动作
     emit("action", action.id);
