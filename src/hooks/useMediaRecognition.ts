@@ -33,16 +33,6 @@ export function useMediaRecognition() {
   const result = ref<MediaItem | null>(null);
   const errorMessage = ref("");
 
-  // 计算当前状态
-  const state = computed<MediaRecognitionState>(() => {
-    if (loading.value) return "loading";
-    if (errorMessage.value) return "error";
-    if (result.value && result.value.title) return "success";
-    if (result.value === null && !errorMessage.value && !loading.value)
-      return "not-found";
-    return "idle";
-  });
-
   // 是否有结果或错误信息需要显示
   const hasResultOrError = computed(() => {
     return result.value || errorMessage.value;
@@ -130,7 +120,6 @@ export function useMediaRecognition() {
     loading,
     result,
     errorMessage,
-    state,
     hasResultOrError,
 
     // 方法

@@ -331,7 +331,6 @@ const {
   loading,
   result,
   errorMessage,
-  state,
   hasResultOrError,
   recognize,
   resetState,

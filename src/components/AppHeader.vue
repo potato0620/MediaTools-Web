@@ -11,11 +11,10 @@
     <div class="header-actions">
       <v-btn
         v-for="action in headerActions"
-        :key="action.id"
+        :key="action.action"
         :color="action.color || 'primary'"
-        :variant="action.variant || 'elevated'"
-        :size="action.size || 'default'"
-        :disabled="action.disabled"
+        variant="elevated"
+        size="default"
         :loading="action.loading"
         class="ml-2 header-btn"
         @click="handleAction(action)"
@@ -28,111 +27,83 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useThemeManager } from "@/hooks";
+import { computed } from "vue";
+import { useThemeManager, useGlobalDialogs } from "@/hooks";
+import { type MediaItem } from "@/types";
+
+enum Action {
+  MediRecognition = "media-recognition",
+  ViewLogs = "view-logs",
+  ThemeSwitch = "theme-switch",
+}
 
 // 按钮动作类型定义
 interface HeaderAction {
-  id: string;
-  text?: string;
-  icon?: string;
-  color?: string;
-  variant?: "flat" | "text" | "elevated" | "tonal" | "outlined" | "plain";
-  size?: "x-small" | "small" | "default" | "large" | "x-large";
-  disabled?: boolean;
-  loading?: boolean;
-  action: string; // 对应的事件名称
+  action: Action; // 对应的事件
+  text?: string; // 按钮文本
+  icon?: string; // 图标名称
+  color?: string; // 按钮颜色
+  loading?: boolean; // 是否显示加载状态
 }
 
-// 事件定义
-interface Emits {
-  (e: "media-recognition"): void;
-  (e: "view-logs"): void;
-  (e: "action", actionId: string): void; // 通用动作事件
-}
-
-const emit = defineEmits<Emits>();
-
-// 动态加载状态
-const loadingStates = ref<Record<string, boolean>>({});
-
-// 使用主题管理hook
-const { currentThemeConfig, toggleTheme } = useThemeManager();
+const { openMediaRecognitionDialog, openLogDialog } = useGlobalDialogs(); // 使用全局弹窗管理
+const { currentThemeConfig, toggleTheme } = useThemeManager(); // 使用主题管理hook
 
 // 头部按钮配置
 const headerActions = computed<HeaderAction[]>(() => [
   {
-    id: "media-recognition",
+    action: Action.MediRecognition,
     text: "识别媒体",
     icon: "mdi-movie-search",
     color: "primary",
     variant: "elevated",
-    loading: loadingStates.value["media-recognition"],
-    action: "media-recognition",
+    // loading: loadingStates.value["media-recognition"],
   },
   {
-    id: "view-logs",
+    action: Action.ViewLogs,
     text: "查看日志",
     icon: "mdi-text-box-outline",
-    color: "info",
+    color: "primary",
     variant: "elevated",
-    action: "view-logs",
   },
   {
-    id: "theme-switch",
+    action: Action.ThemeSwitch,
     text: currentThemeConfig.value.text,
     icon: currentThemeConfig.value.icon,
     color: "primary",
     variant: "elevated",
-    action: "theme-switch",
   },
 ]);
 
 // 处理按钮点击
 const handleAction = (action: HeaderAction) => {
-  // 设置加载状态
-  if (action.loading !== undefined) {
-    loadingStates.value[action.id] = true;
-  }
-
-  // 发送对应的事件
-  if (action.action === "media-recognition") {
-    emit("media-recognition");
-  } else if (action.action === "view-logs") {
-    // 发送查看日志事件，让父组件处理
-    emit("view-logs");
-  } else if (action.action === "theme-switch") {
-    // 切换主题
-    toggleTheme();
-    return;
-  } else {
-    // 通用动作事件，可以在父组件中处理其他动作
-    emit("action", action.id);
-  }
-
-  // 模拟操作完成后清除加载状态
-  setTimeout(() => {
-    loadingStates.value[action.id] = false;
-  }, 1000);
-};
-
-// 暴露方法供外部调用
-const setActionLoading = (actionId: string, loading: boolean) => {
-  loadingStates.value[actionId] = loading;
-};
-
-const setActionDisabled = (actionId: string, disabled: boolean) => {
-  const action = headerActions.value.find((a) => a.id === actionId);
-  if (action) {
-    action.disabled = disabled;
+  switch (action.action) {
+    case Action.MediRecognition: // 触发媒体识别事件
+      console.log("打开媒体识别对话框");
+      openMediaRecognitionDialog({
+        onSuccess(data: MediaItem) {
+          console.log("媒体识别成功:", data);
+        },
+        onClose() {
+          console.log("媒体识别对话框已关闭");
+        },
+      });
+      break;
+    case Action.ViewLogs: // 触发查看日志事件
+      console.log("打开日志对话框");
+      openLogDialog({
+        onClose() {
+          console.log("日志对话框已关闭");
+        },
+      });
+      break;
+    case Action.ThemeSwitch: //  触发切换主题事件
+      toggleTheme();
+      break;
+    default:
+      console.warn(`未知操作: ${action.action}`);
   }
 };
-
-// 暴露给父组件使用
-defineExpose({
-  setActionLoading,
-  setActionDisabled,
-});
 </script>
 
 <style scoped>
