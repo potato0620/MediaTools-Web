@@ -4,8 +4,8 @@ import { ref, reactive } from "vue";
  * 弹窗类型枚举
  */
 export enum DialogType {
-  MEDIA_RECOGNITION = "media-recognition",
-  LOG = "log",
+  MEDIA_RECOGNITION = "media-recognition", // 识别媒体弹窗
+  LOG = "log", // 日志弹窗
   // 可以扩展其他弹窗类型
   // USER_PROFILE = 'user-profile',
   // SETTINGS = 'settings',
@@ -15,19 +15,18 @@ export enum DialogType {
  * 弹窗配置接口
  */
 export interface DialogConfig {
-  type: DialogType;
-  visible: boolean;
-  props?: Record<string, any>;
-  data?: any;
+  type: DialogType; // 弹窗类型
+  visible: boolean; // 弹窗是否可见
+  props?: Record<string, any>; // 弹窗属性
+  data?: any; // 弹窗数据
 }
 
 /**
  * 弹窗事件处理器类型
  */
 export interface DialogEventHandlers {
-  onSuccess?: (data: any) => void;
-  // onCancel?: () => void;
-  onClose?: () => void;
+  onSuccess?: (data: any) => void; // 成功事件处理器
+  onClose?: () => void; // 关闭事件处理器
 }
 
 // 全局状态 - 在模块级别创建，确保所有组件共享同一个实例
