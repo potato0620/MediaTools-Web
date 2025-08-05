@@ -57,11 +57,18 @@ export const extractErrorMessage = (error: unknown): string => {
  * @returns 验证结果
  */
 export const validateMediaTitle = (
-  title: string
+  title: string | null | undefined
 ): {
   isValid: boolean;
   errorMessage?: string;
 } => {
+  if (!title) {
+    return {
+      isValid: false,
+      errorMessage: "请输入媒体名称",
+    };
+  }
+
   const trimmedTitle = title.trim();
 
   if (!trimmedTitle) {

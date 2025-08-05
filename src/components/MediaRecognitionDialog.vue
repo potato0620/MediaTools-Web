@@ -5,7 +5,7 @@
     max-width="1000"
     :loading="loading"
     :confirm-text="confirmText"
-    :confirm-disabled="!mediaTitle.trim()"
+    :confirm-disabled="!mediaTitle?.trim()"
     persistent
     @confirm="handleRecognize"
   >
@@ -221,7 +221,7 @@
       <v-btn
         color="primary"
         :loading="loading"
-        :disabled="!mediaTitle.trim()"
+        :disabled="!mediaTitle?.trim()"
         @click="handleRecognize"
       >
         {{ result ? "重新识别" : confirmText }}
@@ -321,10 +321,14 @@ const handleCancel = () => {
 
 // 识别媒体
 const handleRecognize = async () => {
-  const result = await recognize();
+  const recognitionResult = await recognize();
 
-  if (result.state === "success" && result.result) {
-    emit("success", result.result);
+  // 注意：这里不再自动触发 success 事件，让用户在弹窗中查看结果
+  // 如果需要在识别成功时执行某些操作，可以在这里添加
+  if (recognitionResult.state === "success" && recognitionResult.result) {
+    console.log("识别成功，结果已显示在弹窗中");
+    // 可以选择性地触发 success 事件，但不关闭弹窗
+    // emit("success", recognitionResult.result);
   }
 };
 </script>
