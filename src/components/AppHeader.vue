@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useThemeManager } from "@/hooks";
+import { useThemeManager, useLogDialog } from "@/hooks";
 
 // 按钮动作类型定义
 interface HeaderAction {
@@ -47,6 +47,7 @@ interface HeaderAction {
 // 事件定义
 interface Emits {
   (e: "media-recognition"): void;
+  (e: "view-logs"): void;
   (e: "action", actionId: string): void; // 通用动作事件
 }
 
@@ -58,6 +59,9 @@ const loadingStates = ref<Record<string, boolean>>({});
 // 使用主题管理hook
 const { currentThemeConfig, toggleTheme } = useThemeManager();
 
+// 使用日志弹窗hook
+const { openLogDialog } = useLogDialog();
+
 // 头部按钮配置
 const headerActions = computed<HeaderAction[]>(() => [
   {
@@ -68,6 +72,14 @@ const headerActions = computed<HeaderAction[]>(() => [
     variant: "elevated",
     loading: loadingStates.value["media-recognition"],
     action: "media-recognition",
+  },
+  {
+    id: "view-logs",
+    text: "查看日志",
+    icon: "mdi-text-box-outline",
+    color: "info",
+    variant: "elevated",
+    action: "view-logs",
   },
   {
     id: "theme-switch",
@@ -89,6 +101,10 @@ const handleAction = (action: HeaderAction) => {
   // 发送对应的事件
   if (action.action === "media-recognition") {
     emit("media-recognition");
+  } else if (action.action === "view-logs") {
+    // 打开日志弹窗，可以传入标题过滤日志
+    openLogDialog();
+    emit("view-logs");
   } else if (action.action === "theme-switch") {
     // 切换主题
     toggleTheme();

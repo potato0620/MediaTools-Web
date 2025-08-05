@@ -25,6 +25,7 @@
 
     <AppHeader
       @media-recognition="handleMediaRecognition"
+      @view-logs="handleViewLogs"
       @action="handleHeaderAction"
     />
 
@@ -35,6 +36,9 @@
     <!-- 全局弹窗容器 -->
     <GlobalDialogs />
 
+    <!-- 日志弹窗组件 -->
+    <LogDialog />
+
     <!-- 全局消息组件 -->
     <GlobalMessage />
   </v-app>
@@ -44,6 +48,7 @@
 import GlobalMessage from "@/components/GlobalMessage.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import GlobalDialogs from "@/components/GlobalDialogs.vue";
+import LogDialog from "@/components/LogDialog.vue";
 import { useGlobalDialogs } from "@/hooks";
 import type { MediaItem } from "@/types";
 
@@ -66,6 +71,12 @@ const handleMediaRecognition = () => {
       console.log("关闭弹窗");
     },
   });
+};
+
+// 处理查看日志请求
+const handleViewLogs = () => {
+  console.log("查看日志");
+  // 日志弹窗的打开逻辑已经在AppHeader组件中处理了
 };
 
 // 处理头部其他动作
