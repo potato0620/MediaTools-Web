@@ -4,25 +4,35 @@
     :title="title"
     max-width="1000"
     :loading="loading"
-    :confirm-text="confirmText"
-    :confirm-disabled="!mediaTitle?.trim()"
     persistent
-    @confirm="handleRecognize"
   >
     <!-- 输入区域 -->
-    <v-text-field
-      v-model="mediaTitle"
-      :label="inputLabel"
-      :hint="inputHint"
-      :placeholder="placeholder"
-      persistent-hint
-      :loading="loading"
-      :disabled="loading"
-      variant="outlined"
-      clearable
-      @keyup.enter="handleRecognize"
-      @clear="mediaTitle = ''"
-    />
+    <div class="d-flex align-center gap-3">
+      <v-text-field
+        v-model="mediaTitle"
+        :label="inputLabel"
+        :hint="inputHint"
+        :placeholder="placeholder"
+        persistent-hint
+        :loading="loading"
+        :disabled="loading"
+        variant="outlined"
+        clearable
+        class="flex-grow-1"
+        density="default"
+        @keyup.enter="handleRecognize"
+        @clear="mediaTitle = ''"
+      />
+      <v-btn
+        color="primary"
+        :loading="loading"
+        :disabled="!mediaTitle?.trim()"
+        class="recognize-btn"
+        @click="handleRecognize"
+      >
+        {{ result ? "重新识别" : confirmText }}
+      </v-btn>
+    </div>
 
     <!-- 识别结果区域 -->
     <div v-if="hasResultOrError" class="mt-4">
@@ -275,21 +285,6 @@
         </v-card-text>
       </v-card>
     </div>
-
-    <template #actions>
-      <v-spacer />
-      <v-btn variant="text" :disabled="loading" @click="handleCancel">
-        {{ cancelText }}
-      </v-btn>
-      <v-btn
-        color="primary"
-        :loading="loading"
-        :disabled="!mediaTitle?.trim()"
-        @click="handleRecognize"
-      >
-        {{ result ? "重新识别" : confirmText }}
-      </v-btn>
-    </template>
   </BaseDialog>
 </template>
 
@@ -306,7 +301,6 @@ interface Props {
   title?: string;
   inputLabel?: string;
   inputHint?: string;
-  cancelText?: string;
   confirmText?: string;
   placeholder?: string;
 }
@@ -314,7 +308,6 @@ interface Props {
 interface Emits {
   (e: "update:visible", value: boolean): void;
   (e: "success", result: MediaItem): void;
-  (e: "cancel"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -322,7 +315,6 @@ const props = withDefaults(defineProps<Props>(), {
   inputLabel: "请输入媒体名称",
   inputHint:
     "例如：[Haruhana] Kaoru Hana wa Rin to Saku - 05 [WebRip][HEVC-10bit 1080p][CHI_JPN].mkv",
-  cancelText: "取消",
   confirmText: "识别",
   placeholder: "",
 });
@@ -425,7 +417,7 @@ const handleCancel = () => {
   if (!loading.value) {
     resetState();
     resetPosterState();
-    emit("cancel");
+    computedVisible.value = false;
   }
 };
 
@@ -444,6 +436,22 @@ const handleRecognize = async () => {
 </script>
 
 <style scoped>
+.gap-3 {
+  gap: 12px;
+}
+
+/* 确保按钮与输入框高度对齐 */
+.recognize-btn {
+  height: 56px !important; /* 与outlined text-field的默认高度匹配 */
+  min-width: 100px;
+  align-self: stretch; /* 让按钮填满容器高度 */
+}
+
+/* 输入框容器对齐 */
+.d-flex.align-center {
+  align-items: flex-start; /* 从顶部对齐，而不是center */
+}
+
 .poster-container {
   width: 100%;
   max-width: 200px;
@@ -480,6 +488,16 @@ const handleRecognize = async () => {
 
   .poster-placeholder {
     height: 225px !important;
+  }
+
+  /* 移动端按钮调整 */
+  .gap-3 {
+    gap: 8px;
+  }
+
+  .recognize-btn {
+    min-width: 80px;
+    height: 56px !important;
   }
 }
 </style>
