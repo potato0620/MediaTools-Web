@@ -33,22 +33,6 @@
       <v-card-text :class="contentClass" :style="contentStyle">
         <slot />
       </v-card-text>
-
-      <!-- 操作按钮区域 -->
-      <v-card-actions v-if="showActions" :class="actionsClass">
-        <slot name="actions">
-          <v-spacer />
-          <v-btn
-            v-if="showConfirmButton"
-            :color="confirmColor"
-            :loading="loading"
-            :disabled="confirmDisabled"
-            @click="handleConfirm"
-          >
-            {{ confirmText }}
-          </v-btn>
-        </slot>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -73,14 +57,6 @@ interface Props {
   // 内容区域
   contentClass?: string;
   contentStyle?: string;
-
-  // 操作按钮
-  showActions?: boolean;
-  showConfirmButton?: boolean;
-  confirmText?: string;
-  confirmColor?: string;
-  confirmDisabled?: boolean;
-  actionsClass?: string;
 }
 
 interface Emits {
@@ -103,13 +79,6 @@ const props = withDefaults(defineProps<Props>(), {
 
   contentClass: "",
   contentStyle: "",
-
-  showActions: true,
-  showConfirmButton: true,
-  confirmText: "确定",
-  confirmColor: "primary",
-  confirmDisabled: false,
-  actionsClass: "px-6 pb-6",
 });
 
 const emit = defineEmits<Emits>();
@@ -126,9 +95,5 @@ const handleClose = () => {
     localVisible.value = false;
     emit("close");
   }
-};
-
-const handleConfirm = () => {
-  emit("confirm");
 };
 </script>
