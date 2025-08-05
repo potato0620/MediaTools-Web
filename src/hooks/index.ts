@@ -5,3 +5,6 @@ export {
   useFolderOperations,
   useFileOperations,
 } from "./useFileOperations";
+export { useMediaRecognition } from "./useMediaRecognition";
+export { useDialog } from "./useDialog";
+export { useGlobalDialogs, DialogType } from "./useGlobalDialogs";

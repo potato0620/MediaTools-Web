@@ -23,9 +23,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar>
-      <v-app-bar-title>MediaTools - 媒体工具</v-app-bar-title>
-    </v-app-bar>
+    <AppHeader @media-recognition="handleMediaRecognition" />
 
     <v-main>
       <router-view />
