@@ -26,7 +26,7 @@ export interface DialogConfig {
  */
 export interface DialogEventHandlers {
   onSuccess?: (data: any) => void;
-  onCancel?: () => void;
+  // onCancel?: () => void;
   onClose?: () => void;
 }
 
@@ -70,7 +70,6 @@ export function useGlobalDialogs() {
 
     // 清空事件处理器
     globalEventHandlers.onSuccess = undefined;
-    globalEventHandlers.onCancel = undefined;
     globalEventHandlers.onClose = undefined;
   };
 
@@ -80,16 +79,6 @@ export function useGlobalDialogs() {
   const handleDialogSuccess = (data: any) => {
     if (globalEventHandlers.onSuccess) {
       globalEventHandlers.onSuccess(data);
-    }
-    closeDialog();
-  };
-
-  /**
-   * 处理弹窗取消事件
-   */
-  const handleDialogCancel = () => {
-    if (globalEventHandlers.onCancel) {
-      globalEventHandlers.onCancel();
     }
     closeDialog();
   };
@@ -121,7 +110,6 @@ export function useGlobalDialogs() {
     openDialog,
     closeDialog,
     handleDialogSuccess,
-    handleDialogCancel,
     handleDialogClose,
 
     // 特定弹窗方法

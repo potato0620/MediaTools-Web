@@ -35,13 +35,8 @@ import LogDialog from "./LogDialog.vue";
 import { useGlobalDialogs, DialogType } from "@/hooks/useGlobalDialogs";
 
 // 使用全局弹窗管理
-const {
-  activeDialog,
-  closeDialog,
-  handleDialogSuccess,
-  handleDialogCancel,
-  handleDialogClose,
-} = useGlobalDialogs();
+const { activeDialog, closeDialog, handleDialogSuccess, handleDialogClose } =
+  useGlobalDialogs();
 
 // 计算弹窗可见性
 const dialogVisible = computed({

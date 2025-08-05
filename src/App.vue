@@ -90,9 +90,6 @@ const handleMediaRecognition = () => {
       console.log("识别成功:", result);
       // 可以在这里添加全局的成功处理逻辑
     },
-    onCancel: () => {
-      console.log("取消识别");
-    },
     onClose: () => {
       console.log("关闭弹窗");
     },
