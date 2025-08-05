@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="state.visible" max-width="800" persistent scrollable>
+  <v-dialog v-model="dialogVisible" max-width="800" persistent scrollable>
     <v-card class="log-dialog">
       <v-card-title class="d-flex align-center">
         <v-icon icon="mdi-text-box-outline" class="mr-2" />
@@ -16,7 +16,7 @@
           icon="mdi-close"
           size="small"
           variant="text"
-          @click="closeLogDialog"
+          @click="handleClose"
         />
       </v-card-title>
 
@@ -71,10 +71,54 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, watch } from "vue";
 import { useLogDialog } from "@/hooks/useLogDialog";
 
+// Props
+interface Props {
+  visible?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  visible: false,
+});
+
+// Emits
+const emit = defineEmits<{
+  "update:visible": [value: boolean];
+}>();
+
 // 使用日志弹窗hook
-const { state, closeLogDialog, refreshLogs } = useLogDialog();
+const { state, refreshLogs } = useLogDialog();
+
+// 计算弹窗可见性
+const dialogVisible = computed({
+  get: () => props.visible,
+  set: (value: boolean) => {
+    emit("update:visible", value);
+  },
+});
+
+// 监听可见性变化，管理日志状态
+watch(
+  () => props.visible,
+  (newValue) => {
+    if (newValue) {
+      // 弹窗打开时获取日志
+      refreshLogs();
+    } else {
+      // 弹窗关闭时清理状态
+      state.logs = [];
+      state.error = null;
+    }
+  },
+  { immediate: true }
+);
+
+// 处理关闭
+const handleClose = () => {
+  emit("update:visible", false);
+};
 </script>
 
 <style scoped>

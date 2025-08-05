@@ -36,9 +36,6 @@
     <!-- 全局弹窗容器 -->
     <GlobalDialogs />
 
-    <!-- 日志弹窗组件 -->
-    <LogDialog />
-
     <!-- 全局消息组件 -->
     <GlobalMessage />
   </v-app>
@@ -48,12 +45,11 @@
 import GlobalMessage from "@/components/GlobalMessage.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import GlobalDialogs from "@/components/GlobalDialogs.vue";
-import LogDialog from "@/components/LogDialog.vue";
 import { useGlobalDialogs } from "@/hooks";
 import type { MediaItem } from "@/types";
 
 // 使用全局弹窗管理
-const { openMediaRecognitionDialog } = useGlobalDialogs();
+const { openMediaRecognitionDialog, openLogDialog } = useGlobalDialogs();
 
 // 处理媒体识别请求
 const handleMediaRecognition = () => {
@@ -75,8 +71,13 @@ const handleMediaRecognition = () => {
 
 // 处理查看日志请求
 const handleViewLogs = () => {
-  console.log("查看日志");
-  // 日志弹窗的打开逻辑已经在AppHeader组件中处理了
+  console.log("打开日志弹窗");
+
+  openLogDialog({
+    onClose: () => {
+      console.log("关闭日志弹窗");
+    },
+  });
 };
 
 // 处理头部其他动作

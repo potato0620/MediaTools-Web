@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useThemeManager, useLogDialog } from "@/hooks";
+import { useThemeManager } from "@/hooks";
 
 // 按钮动作类型定义
 interface HeaderAction {
@@ -58,9 +58,6 @@ const loadingStates = ref<Record<string, boolean>>({});
 
 // 使用主题管理hook
 const { currentThemeConfig, toggleTheme } = useThemeManager();
-
-// 使用日志弹窗hook
-const { openLogDialog } = useLogDialog();
 
 // 头部按钮配置
 const headerActions = computed<HeaderAction[]>(() => [
@@ -102,8 +99,7 @@ const handleAction = (action: HeaderAction) => {
   if (action.action === "media-recognition") {
     emit("media-recognition");
   } else if (action.action === "view-logs") {
-    // 打开日志弹窗，可以传入标题过滤日志
-    openLogDialog();
+    // 发送查看日志事件，让父组件处理
     emit("view-logs");
   } else if (action.action === "theme-switch") {
     // 切换主题

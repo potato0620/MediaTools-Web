@@ -8,6 +8,14 @@
     @update:visible="handleVisibilityChange"
   />
 
+  <!-- 日志弹窗 -->
+  <LogDialog
+    v-else-if="isLogDialog"
+    v-model:visible="dialogVisible"
+    v-bind="activeDialog?.props"
+    @update:visible="handleVisibilityChange"
+  />
+
   <!-- 可以在这里添加其他类型的弹窗 -->
   <!-- 
   <UserProfileDialog
@@ -23,6 +31,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import MediaRecognitionDialog from "./MediaRecognitionDialog.vue";
+import LogDialog from "./LogDialog.vue";
 import { useGlobalDialogs, DialogType } from "@/hooks/useGlobalDialogs";
 
 // 使用全局弹窗管理
@@ -48,6 +57,8 @@ const dialogVisible = computed({
 const isMediaRecognitionDialog = computed(
   () => activeDialog.value?.type === DialogType.MEDIA_RECOGNITION
 );
+
+const isLogDialog = computed(() => activeDialog.value?.type === DialogType.LOG);
 
 // 处理弹窗可见性变化
 const handleVisibilityChange = (visible: boolean) => {
