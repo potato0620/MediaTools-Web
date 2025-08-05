@@ -23,7 +23,10 @@
       </v-list>
     </v-navigation-drawer>
 
-    <AppHeader @media-recognition="handleMediaRecognition" />
+    <AppHeader
+      @media-recognition="handleMediaRecognition"
+      @action="handleHeaderAction"
+    />
 
     <v-main>
       <router-view />
@@ -63,6 +66,24 @@ const handleMediaRecognition = () => {
       console.log("关闭弹窗");
     },
   });
+};
+
+// 处理头部其他动作
+const handleHeaderAction = (actionId: string) => {
+  console.log("执行头部动作:", actionId);
+
+  switch (actionId) {
+    case "batch-operation":
+      // 处理批量操作
+      console.log("执行批量操作");
+      break;
+    case "settings":
+      // 打开设置页面
+      console.log("打开设置");
+      break;
+    default:
+      console.log("未知动作:", actionId);
+  }
 };
 </script>
 
