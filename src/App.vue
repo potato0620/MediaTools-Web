@@ -45,7 +45,7 @@ import GlobalMessage from "@/components/GlobalMessage.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import GlobalDialogs from "@/components/GlobalDialogs.vue";
 import { useGlobalDialogs } from "@/hooks";
-import type { MediaItem } from "@/types/media";
+import type { MediaItem } from "@/types";
 
 // 使用全局弹窗管理
 const { openMediaRecognitionDialog } = useGlobalDialogs();

@@ -233,7 +233,7 @@
 <script lang="ts" setup>
 import { computed, watch } from "vue";
 import BaseDialog from "@/components/BaseDialog.vue";
-import type { MediaItem } from "@/types/media";
+import type { MediaItem } from "@/types";
 import { useMediaRecognition, useDialog } from "@/hooks";
 import { getMediaTypeText } from "@/utils";
 

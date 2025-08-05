@@ -1,6 +1,6 @@
 import { ref, computed, watch } from "vue";
-import { MediaService } from "@/services/media";
-import type { MediaItem } from "@/types/media";
+import { MediaService } from "@/services";
+import type { MediaItem } from "@/types";
 import { extractErrorMessage, validateMediaTitle } from "@/utils/mediaUtils";
 
 /**

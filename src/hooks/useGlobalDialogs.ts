@@ -1,5 +1,4 @@
 import { ref, reactive } from "vue";
-import type { MediaItem } from "@/types/media";
 
 /**
  * 弹窗类型枚举
