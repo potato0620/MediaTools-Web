@@ -126,6 +126,15 @@
                         <v-list-item class="px-0 py-1">
                           <v-list-item-title
                             class="text-caption font-weight-bold"
+                            >标题</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.title
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
                             >原始标题</v-list-item-title
                           >
                           <v-list-item-subtitle class="text-body-2">{{
