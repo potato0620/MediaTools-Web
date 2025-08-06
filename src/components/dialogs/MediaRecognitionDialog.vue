@@ -393,6 +393,27 @@
                             </v-chip>
                           </v-list-item-subtitle>
                         </v-list-item>
+                        <v-list-item
+                          v-if="result.release_groups?.length"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >自定义词</v-list-item-title
+                          >
+                          <v-list-item-subtitle>
+                            <v-chip
+                              v-for="word in result.customization"
+                              :key="word"
+                              size="x-small"
+                              class="mr-1 mt-1"
+                              color="primary"
+                              variant="tonal"
+                            >
+                              {{ word }}
+                            </v-chip>
+                          </v-list-item-subtitle>
+                        </v-list-item>
                       </v-list>
                     </v-col>
                   </v-row>
