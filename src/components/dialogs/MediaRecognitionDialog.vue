@@ -289,12 +289,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, nextTick } from "vue";
+import { computed, watch } from "vue";
 import BaseDialog from "@/components/dialogs/BaseDialog.vue";
 import type { MediaItem } from "@/types";
 import { useMediaRecognition, useDialog } from "@/hooks";
 import { getMediaTypeText } from "@/utils";
-import { TMDBService } from "@/services/tmdb";
 
 interface Props {
   visible: boolean;
@@ -320,20 +319,19 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-// 海报相关状态
-const posterUrl = ref<string>("");
-const loadingPoster = ref<boolean>(false);
-const posterError = ref<string>("");
-
-// 使用媒体识别 hook
+// 使用媒体识别 hook（包含海报功能）
 const {
   mediaTitle,
   loading,
   result,
   errorMessage,
   hasResultOrError,
+  posterUrl,
+  loadingPoster,
+  posterError,
   recognize,
   resetState,
+  handlePosterError,
 } = useMediaRecognition();
 
 // 使用弹窗管理 hook
@@ -367,49 +365,9 @@ watch(
   (newVal) => {
     if (newVal) {
       resetState();
-      resetPosterState();
     }
   }
 );
-
-// 监听识别结果变化，获取海报
-watch(result, async (newResult) => {
-  if (newResult && newResult.tmdb_id && newResult.media_type) {
-    await loadPoster(newResult.media_type, newResult.tmdb_id);
-  }
-});
-
-// 重置海报状态
-const resetPosterState = () => {
-  posterUrl.value = "";
-  loadingPoster.value = false;
-  posterError.value = "";
-};
-
-// 加载海报
-const loadPoster = async (mediaType: string, tmdbId: number) => {
-  try {
-    resetPosterState();
-    loadingPoster.value = true;
-
-    const url = await TMDBService.ImageService.GetPosterImage(
-      mediaType,
-      tmdbId
-    );
-    posterUrl.value = url;
-    posterError.value = "";
-  } catch (error) {
-    console.error("获取海报失败:", error);
-    posterError.value = "获取海报失败";
-  } finally {
-    loadingPoster.value = false;
-  }
-};
-
-// 处理海报加载错误
-const handlePosterError = () => {
-  posterError.value = "海报加载失败";
-};
 
 // 识别媒体
 const handleRecognize = async () => {

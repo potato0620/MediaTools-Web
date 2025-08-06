@@ -1,5 +1,6 @@
 import { ref, computed, watch } from "vue";
 import { MediaService } from "@/services";
+import { TMDBService } from "@/services/tmdb";
 import type { MediaItem } from "@/types";
 import { extractErrorMessage, validateMediaTitle } from "@/utils/mediaUtils";
 
@@ -33,6 +34,11 @@ export function useMediaRecognition() {
   const result = ref<MediaItem | null>(null);
   const errorMessage = ref("");
 
+  // 海报相关状态
+  const posterUrl = ref<string>("");
+  const loadingPoster = ref<boolean>(false);
+  const posterError = ref<string>("");
+
   // 是否有结果或错误信息需要显示
   const hasResultOrError = computed(() => {
     return result.value || errorMessage.value;
@@ -43,13 +49,54 @@ export function useMediaRecognition() {
     mediaTitle.value = "";
     result.value = null;
     errorMessage.value = "";
+    resetPosterState();
+  };
+
+  // 重置海报状态
+  const resetPosterState = () => {
+    posterUrl.value = "";
+    loadingPoster.value = false;
+    posterError.value = "";
   };
 
   // 清空结果和错误
   const clearResult = () => {
     result.value = null;
     errorMessage.value = "";
+    resetPosterState();
   };
+
+  // 加载海报
+  const loadPoster = async (mediaType: string, tmdbId: number) => {
+    try {
+      resetPosterState();
+      loadingPoster.value = true;
+
+      const url = await TMDBService.ImageService.GetPosterImage(
+        mediaType,
+        tmdbId
+      );
+      posterUrl.value = url;
+      posterError.value = "";
+    } catch (error) {
+      console.error("获取海报失败:", error);
+      posterError.value = "获取海报失败";
+    } finally {
+      loadingPoster.value = false;
+    }
+  };
+
+  // 处理海报加载错误
+  const handlePosterError = () => {
+    posterError.value = "海报加载失败";
+  };
+
+  // 监听识别结果变化，自动获取海报
+  watch(result, async (newResult) => {
+    if (newResult && newResult.tmdb_id && newResult.media_type) {
+      await loadPoster(newResult.media_type, newResult.tmdb_id);
+    }
+  });
 
   /**
    * 执行媒体识别
@@ -122,9 +169,17 @@ export function useMediaRecognition() {
     errorMessage,
     hasResultOrError,
 
+    // 海报相关状态
+    posterUrl,
+    loadingPoster,
+    posterError,
+
     // 方法
     recognize,
     resetState,
     clearResult,
+    loadPoster,
+    resetPosterState,
+    handlePosterError,
   };
 }
