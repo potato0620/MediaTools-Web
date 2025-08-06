@@ -39,6 +39,11 @@ export function useMediaRecognition() {
   const loadingPoster = ref<boolean>(false);
   const posterError = ref<string>("");
 
+  // 简介相关状态
+  const overview = ref<string>("");
+  const loadingOverview = ref<boolean>(false);
+  const overviewError = ref<string>("");
+
   // 是否有结果或错误信息需要显示
   const hasResultOrError = computed(() => {
     return result.value || errorMessage.value;
@@ -50,6 +55,7 @@ export function useMediaRecognition() {
     result.value = null;
     errorMessage.value = "";
     resetPosterState();
+    resetOverviewState();
   };
 
   // 重置海报状态
@@ -59,11 +65,19 @@ export function useMediaRecognition() {
     posterError.value = "";
   };
 
+  // 重置简介状态
+  const resetOverviewState = () => {
+    overview.value = "";
+    loadingOverview.value = false;
+    overviewError.value = "";
+  };
+
   // 清空结果和错误
   const clearResult = () => {
     result.value = null;
     errorMessage.value = "";
     resetPosterState();
+    resetOverviewState();
   };
 
   // 加载海报
@@ -91,10 +105,32 @@ export function useMediaRecognition() {
     posterError.value = "海报加载失败";
   };
 
-  // 监听识别结果变化，自动获取海报
+  // 加载简介
+  const loadOverview = async (mediaType: string, tmdbId: number) => {
+    try {
+      resetOverviewState();
+      loadingOverview.value = true;
+
+      const overviewText = await TMDBService.GetOverview(mediaType, tmdbId);
+      overview.value = overviewText || "暂无简介";
+      overviewError.value = "";
+    } catch (error) {
+      console.error("获取简介失败:", error);
+      overviewError.value = "获取简介失败";
+      overview.value = "";
+    } finally {
+      loadingOverview.value = false;
+    }
+  };
+
+  // 监听识别结果变化，自动获取海报和简介
   watch(result, async (newResult) => {
     if (newResult && newResult.tmdb_id && newResult.media_type) {
-      await loadPoster(newResult.media_type, newResult.tmdb_id);
+      // 并行加载海报和简介
+      await Promise.all([
+        loadPoster(newResult.media_type, newResult.tmdb_id),
+        loadOverview(newResult.media_type, newResult.tmdb_id),
+      ]);
     }
   });
 
@@ -174,6 +210,11 @@ export function useMediaRecognition() {
     loadingPoster,
     posterError,
 
+    // 简介相关状态
+    overview,
+    loadingOverview,
+    overviewError,
+
     // 方法
     recognize,
     resetState,
@@ -181,5 +222,7 @@ export function useMediaRecognition() {
     loadPoster,
     resetPosterState,
     handlePosterError,
+    loadOverview,
+    resetOverviewState,
   };
 }
