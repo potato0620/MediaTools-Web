@@ -11,9 +11,7 @@
       <v-text-field
         v-model="mediaTitle"
         :label="inputLabel"
-        :hint="inputHint"
         :placeholder="placeholder"
-        persistent-hint
         :loading="loading"
         :disabled="loading"
         variant="outlined"
@@ -443,7 +441,6 @@ interface Props {
   visible: boolean;
   title?: string;
   inputLabel?: string;
-  inputHint?: string;
   confirmText?: string;
   placeholder?: string;
 }
@@ -456,10 +453,9 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   title: "媒体识别",
   inputLabel: "请输入媒体名称",
-  inputHint:
-    "例如：[Haruhana] Kaoru Hana wa Rin to Saku - 05 [WebRip][HEVC-10bit 1080p][CHI_JPN].mkv",
   confirmText: "识别",
-  placeholder: "",
+  placeholder:
+    "例如：[Haruhana] Kaoru Hana wa Rin to Saku - 05 [WebRip][HEVC-10bit 1080p][CHI_JPN].mkv",
 });
 const emit = defineEmits<Emits>();
 
