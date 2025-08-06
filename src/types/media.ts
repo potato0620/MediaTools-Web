@@ -4,9 +4,7 @@ export interface MediaItem {
   year: number; // 年份
   media_type: string; // 电影、电视剧
   part: string; // 分段
-  version: number; // 版本号
-  release_groups: string[]; // 发布组
-  platform: string; // 流媒体平台
+
   file_extension: string; // 文件扩展名
 
   // ID 信息
@@ -15,6 +13,9 @@ export interface MediaItem {
   tvdb_id: number; // TVDB ID
 
   // 资源相关信息
+  release_groups: string[]; // 发布组
+  version: number; // 版本号
+  platform: string; // 流媒体平台
   resource_type: string; // 资源类型
   resource_effect: string[]; // 资源效果
   resource_pix: string; // 分辨率
