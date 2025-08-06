@@ -6,9 +6,6 @@ import { ref, reactive } from "vue";
 export enum DialogType {
   MEDIA_RECOGNITION = "media-recognition", // 识别媒体弹窗
   LOG = "log", // 日志弹窗
-  // 可以扩展其他弹窗类型
-  // USER_PROFILE = 'user-profile',
-  // SETTINGS = 'settings',
 }
 
 /**
@@ -25,8 +22,9 @@ export interface DialogConfig {
  * 弹窗事件处理器类型
  */
 export interface DialogEventHandlers {
-  onSuccess?: (data: any) => void; // 成功事件处理器
-  onClose?: () => void; // 关闭事件处理器
+  onOpen?: () => void; // 打开事件处理器
+  onSuccess?: (data: any) => void; // 成功事件处理器（点击了“确定”或“提交”）
+  onClose?: () => void; // 关闭事件处理器（点击关闭按钮）
 }
 
 // 全局状态 - 在模块级别创建，确保所有组件共享同一个实例
@@ -68,12 +66,24 @@ export function useGlobalDialogs() {
     }
 
     // 清空事件处理器
+    globalEventHandlers.onOpen = undefined;
     globalEventHandlers.onSuccess = undefined;
     globalEventHandlers.onClose = undefined;
   };
 
   /**
+   * 处理弹窗打开事件
+   * 当弹窗被打开时，应该调用这个方法
+   */
+  const handleDialogOpen = () => {
+    if (globalEventHandlers.onOpen) {
+      globalEventHandlers.onOpen();
+    }
+  };
+
+  /**
    * 处理弹窗成功事件
+   * 点击了“确定”或“提交”，在这种情况下，弹窗应该关闭，并且相关的事件处理器应该被调用
    */
   const handleDialogSuccess = (data: any) => {
     if (globalEventHandlers.onSuccess) {
@@ -84,6 +94,7 @@ export function useGlobalDialogs() {
 
   /**
    * 处理弹窗关闭事件
+   * 点击关闭按钮或其他方式关闭弹窗时，应该调用这个方法
    */
   const handleDialogClose = () => {
     if (globalEventHandlers.onClose) {
@@ -92,27 +103,22 @@ export function useGlobalDialogs() {
     closeDialog();
   };
 
-  // 特定弹窗的便捷方法
-  const openMediaRecognitionDialog = (handlers?: DialogEventHandlers) => {
-    openDialog(DialogType.MEDIA_RECOGNITION, {}, handlers);
-  };
-
-  const openLogDialog = (handlers?: DialogEventHandlers) => {
-    openDialog(DialogType.LOG, {}, handlers);
-  };
-
   return {
     // 状态
-    activeDialog: globalActiveDialog,
+    activeDialog: globalActiveDialog, // 当前活动的弹窗配置
 
     // 通用方法
-    openDialog,
-    closeDialog,
-    handleDialogSuccess,
-    handleDialogClose,
+    closeDialog, // 关闭弹窗
+    handleDialogOpen, // 处理弹窗打开事件
+    handleDialogSuccess, // 处理弹窗成功事件
+    handleDialogClose, // 处理弹窗关闭事件
 
     // 特定弹窗方法
-    openMediaRecognitionDialog,
-    openLogDialog,
+    openMediaRecognitionDialog() {
+      openDialog(DialogType.MEDIA_RECOGNITION, {}, {});
+    },
+    openLogDialog() {
+      openDialog(DialogType.LOG, {}, {});
+    },
   };
 }
