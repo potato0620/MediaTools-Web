@@ -290,7 +290,7 @@
 
 <script lang="ts" setup>
 import { computed, watch, ref, nextTick } from "vue";
-import BaseDialog from "@/components/BaseDialog.vue";
+import BaseDialog from "@/components/dialogs/BaseDialog.vue";
 import type { MediaItem } from "@/types";
 import { useMediaRecognition, useDialog } from "@/hooks";
 import { getMediaTypeText } from "@/utils";
@@ -409,15 +409,6 @@ const loadPoster = async (mediaType: string, tmdbId: number) => {
 // 处理海报加载错误
 const handlePosterError = () => {
   posterError.value = "海报加载失败";
-};
-
-// 关闭对话框
-const handleCancel = () => {
-  if (!loading.value) {
-    resetState();
-    resetPosterState();
-    computedVisible.value = false;
-  }
 };
 
 // 识别媒体
