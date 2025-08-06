@@ -30,8 +30,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import MediaRecognitionDialog from "./MediaRecognitionDialog.vue";
-import LogDialog from "./LogDialog.vue";
+import MediaRecognitionDialog from "./dialogs/MediaRecognitionDialog.vue";
+import LogDialog from "./dialogs/LogDialog.vue";
 import { useGlobalDialogs, DialogType } from "@/hooks/useGlobalDialogs";
 
 // 使用全局弹窗管理
