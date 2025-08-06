@@ -168,27 +168,48 @@
                             class="text-caption font-weight-bold"
                             >TMDB ID</v-list-item-title
                           >
-                          <v-list-item-subtitle class="text-body-2">{{
-                            result.tmdb_id
-                          }}</v-list-item-subtitle>
+                          <v-list-item-subtitle class="text-body-2">
+                            <a
+                              :href="`https://www.themoviedb.org/${
+                                isTV ? 'tv' : 'movie'
+                              }/${result.tmdb_id}`"
+                              target="_blank"
+                              class="text-decoration-none text-primary"
+                              @click.stop
+                              >{{ result.tmdb_id }}
+                            </a>
+                          </v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item v-if="result.imdb_id" class="px-0 py-1">
                           <v-list-item-title
                             class="text-caption font-weight-bold"
                             >IMDB ID</v-list-item-title
                           >
-                          <v-list-item-subtitle class="text-body-2">{{
-                            result.imdb_id
-                          }}</v-list-item-subtitle>
+                          <v-list-item-subtitle class="text-body-2">
+                            <a
+                              :href="`https://www.imdb.com/title/${result.imdb_id}`"
+                              target="_blank"
+                              class="text-decoration-none text-primary"
+                              @click.stop
+                              >{{ result.imdb_id }}
+                            </a>
+                          </v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item v-if="result.tvdb_id" class="px-0 py-1">
                           <v-list-item-title
                             class="text-caption font-weight-bold"
                             >TVDB ID</v-list-item-title
                           >
-                          <v-list-item-subtitle class="text-body-2">{{
-                            result.tvdb_id
-                          }}</v-list-item-subtitle>
+                          <v-list-item-subtitle class="text-body-2">
+                            <a
+                              :href="`https://thetvdb.com/?tab=series&id=${result.tvdb_id}`"
+                              target="_blank"
+                              class="text-decoration-none text-primary"
+                              @click.stop
+                            >
+                              {{ result.tvdb_id }}
+                            </a>
+                          </v-list-item-subtitle>
                         </v-list-item>
                       </v-list>
                     </v-col>
