@@ -113,6 +113,7 @@
             <v-col cols="12" md="9">
               <v-tabs v-model="activeTab" color="primary" class="mb-3">
                 <v-tab value="basic">基本信息</v-tab>
+                <v-tab value="overview">简介</v-tab>
                 <v-tab value="resource">资源信息</v-tab>
                 <v-tab v-if="isTV" value="tv">电视剧信息</v-tab>
               </v-tabs>
@@ -214,6 +215,56 @@
                       </v-list>
                     </v-col>
                   </v-row>
+                </v-tabs-window-item>
+
+                <!-- 简介 -->
+                <v-tabs-window-item value="overview">
+                  <div class="overview-container">
+                    <!-- 加载中 -->
+                    <div
+                      v-if="loadingOverview"
+                      class="d-flex align-center justify-center pa-8"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        color="primary"
+                        size="40"
+                        class="mr-3"
+                      />
+                      <span class="text-body-1">正在获取简介...</span>
+                    </div>
+
+                    <!-- 简介内容 -->
+                    <div v-else-if="overview && !overviewError" class="pa-4">
+                      <div
+                        class="text-body-1"
+                        style="
+                          line-height: 1.5;
+                          text-align: justify;
+                          color: rgba(var(--v-theme-on-surface), 0.87);
+                        "
+                      >
+                        {{ overview }}
+                      </div>
+                    </div>
+
+                    <!-- 简介错误 -->
+                    <v-alert
+                      v-else-if="overviewError"
+                      type="error"
+                      variant="tonal"
+                      class="mb-0"
+                    >
+                      <template #title>获取简介失败</template>
+                      {{ overviewError }}
+                    </v-alert>
+
+                    <!-- 无简介 -->
+                    <v-alert v-else type="info" variant="tonal" class="mb-0">
+                      <template #title>暂无简介</template>
+                      该媒体暂时没有可用的简介信息
+                    </v-alert>
+                  </div>
                 </v-tabs-window-item>
 
                 <!-- 资源信息 -->
@@ -492,7 +543,7 @@ const emit = defineEmits<Emits>();
 // 标签页状态
 const activeTab = ref("basic");
 
-// 使用媒体识别 hook（包含海报功能）
+// 使用媒体识别 hook（包含海报和简介功能）
 const {
   mediaTitle,
   loading,
@@ -502,6 +553,9 @@ const {
   posterUrl,
   loadingPoster,
   posterError,
+  overview,
+  loadingOverview,
+  overviewError,
   recognize,
   resetState,
   handlePosterError,
@@ -603,6 +657,11 @@ const handleRecognize = async () => {
   max-width: 200px;
   background: rgba(0, 0, 0, 0.05);
   border: 2px dashed rgba(0, 0, 0, 0.12);
+}
+
+/* 简介容器样式 */
+.overview-container {
+  min-height: 200px;
 }
 
 @media (max-width: 768px) {
