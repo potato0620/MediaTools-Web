@@ -39,17 +39,13 @@
       <v-divider class="mb-3" />
 
       <!-- 成功结果 -->
-      <v-card
-        v-if="result && result.title"
-        variant="outlined"
-        class="elevation-2"
-      >
+      <v-card v-if="result && result.title" class="elevation-1">
         <v-card-title class="d-flex align-center bg-success py-2">
           <v-icon class="mr-2 text-white">mdi-check-circle</v-icon>
           <div class="text-white">
             <div class="text-h6">{{ result.title }}</div>
             <div class="text-caption">
-              {{ result.year }} | {{ getMediaTypeText(result.media_type) }}
+              {{ result.year }} | {{ result.media_type }}
             </div>
           </div>
         </v-card-title>
@@ -115,142 +111,289 @@
 
             <!-- 详细信息区域 -->
             <v-col cols="12" md="9">
-              <v-row dense>
-                <v-col cols="12" sm="6">
-                  <v-list density="compact" class="pa-0">
-                    <v-list-item class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >原始标题</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.original_title
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >年份</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.year
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >媒体类型</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        getMediaTypeText(result.media_type)
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item v-if="result.platform" class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >平台</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.platform
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item v-if="result.resource_pix" class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >分辨率</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.resource_pix
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                  </v-list>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-list density="compact" class="pa-0">
-                    <v-list-item class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >TMDB ID</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.tmdb_id
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item v-if="result.imdb_id" class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >IMDb ID</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.imdb_id
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item v-if="result.tvdb_id" class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >TVDB ID</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.tvdb_id
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item v-if="result.season > 0" class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >季数</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.season_str
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                    <v-list-item v-if="result.episode > 0" class="px-0 py-1">
-                      <v-list-item-title class="text-caption font-weight-bold"
-                        >集数</v-list-item-title
-                      >
-                      <v-list-item-subtitle class="text-body-2">{{
-                        result.episode_str
-                      }}</v-list-item-subtitle>
-                    </v-list-item>
-                  </v-list>
-                </v-col>
-              </v-row>
+              <v-tabs v-model="activeTab" color="primary" class="mb-3">
+                <v-tab value="basic">基本信息</v-tab>
+                <v-tab value="resource">资源信息</v-tab>
+                <v-tab v-if="isTV" value="tv">电视剧信息</v-tab>
+              </v-tabs>
+
+              <v-tabs-window v-model="activeTab">
+                <!-- 基本信息 -->
+                <v-tabs-window-item value="basic">
+                  <v-row dense>
+                    <v-col cols="12" sm="6">
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >原始标题</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.original_title
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >年份</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.year
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >媒体类型</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.media_type
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >TMDB ID</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.tmdb_id
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item v-if="result.imdb_id" class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >IMDB ID</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.imdb_id
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item v-if="result.tvdb_id" class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >TVDB ID</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.tvdb_id
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+                </v-tabs-window-item>
+
+                <!-- 资源信息 -->
+                <v-tabs-window-item value="resource">
+                  <v-row dense>
+                    <v-col cols="12" sm="6">
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item v-if="result.platform" class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >流媒体平台</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.platform
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.resource_type"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >资源类型</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.resource_type
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.resource_pix"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >分辨率</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.resource_pix
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.video_encode"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >视频编码</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.video_encode
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item
+                          v-if="result.audio_encode"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >音频编码</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.audio_encode
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item v-if="result.part" class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >分段</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.part
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >版本号</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.version
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.resource_effect?.length"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >资源效果</v-list-item-title
+                          >
+                          <v-list-item-subtitle>
+                            <v-chip
+                              v-for="effect in result.resource_effect"
+                              :key="effect"
+                              size="x-small"
+                              class="mr-1 mt-1"
+                              color="secondary"
+                              variant="tonal"
+                            >
+                              {{ effect }}
+                            </v-chip>
+                          </v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.release_groups?.length"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >发布组</v-list-item-title
+                          >
+                          <v-list-item-subtitle>
+                            <v-chip
+                              v-for="group in result.release_groups"
+                              :key="group"
+                              size="x-small"
+                              class="mr-1 mt-1"
+                              color="primary"
+                              variant="tonal"
+                            >
+                              {{ group }}
+                            </v-chip>
+                          </v-list-item-subtitle>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+                </v-tabs-window-item>
+                <!-- 电视剧信息 -->
+                <v-tabs-window-item v-if="isTV" value="tv">
+                  <v-row dense>
+                    <v-col cols="12" sm="6">
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item v-if="result.season > 0" class="px-0 py-1">
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >季数</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.season_str
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.season_year > 0"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >季年份</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.season_year
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.episode > 0"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >集数</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.episode_str
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-list density="compact" class="pa-0">
+                        <v-list-item
+                          v-if="result.episode_title"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >集标题</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.episode_title
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                        <v-list-item
+                          v-if="result.episode_date"
+                          class="px-0 py-1"
+                        >
+                          <v-list-item-title
+                            class="text-caption font-weight-bold"
+                            >集发布日期</v-list-item-title
+                          >
+                          <v-list-item-subtitle class="text-body-2">{{
+                            result.episode_date
+                          }}</v-list-item-subtitle>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+                </v-tabs-window-item>
+              </v-tabs-window>
             </v-col>
           </v-row>
-
-          <!-- 额外信息 -->
-          <div v-if="result.episode_title || result.release_groups?.length">
-            <v-divider class="my-2" />
-            <v-row dense>
-              <v-col cols="12">
-                <v-list density="compact" class="pa-0">
-                  <v-list-item v-if="result.episode_title" class="px-0 py-1">
-                    <v-list-item-title class="text-caption font-weight-bold"
-                      >集标题</v-list-item-title
-                    >
-                    <v-list-item-subtitle class="text-body-2">{{
-                      result.episode_title
-                    }}</v-list-item-subtitle>
-                  </v-list-item>
-                  <v-list-item
-                    v-if="result.release_groups?.length"
-                    class="px-0 py-1"
-                  >
-                    <v-list-item-title class="text-caption font-weight-bold"
-                      >发布组</v-list-item-title
-                    >
-                    <v-list-item-subtitle>
-                      <v-chip
-                        v-for="group in result.release_groups"
-                        :key="group"
-                        size="x-small"
-                        class="mr-1 mt-1"
-                        color="primary"
-                        variant="tonal"
-                      >
-                        {{ group }}
-                      </v-chip>
-                    </v-list-item-subtitle>
-                  </v-list-item>
-                </v-list>
-              </v-col>
-            </v-row>
-          </div>
         </v-card-text>
       </v-card>
 
       <!-- 错误结果 -->
-      <v-card v-else-if="errorMessage" variant="outlined" class="elevation-2">
+      <v-card v-else-if="errorMessage" class="elevation-1">
         <v-card-title class="d-flex align-center bg-error py-2">
           <v-icon class="mr-2 text-white">mdi-alert-circle</v-icon>
           <div class="text-white">
@@ -289,11 +432,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import BaseDialog from "@/components/dialogs/BaseDialog.vue";
 import type { MediaItem } from "@/types";
 import { useMediaRecognition, useDialog } from "@/hooks";
-import { getMediaTypeText } from "@/utils";
 
 interface Props {
   visible: boolean;
@@ -319,6 +461,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
+// 标签页状态
+const activeTab = ref("basic");
+
 // 使用媒体识别 hook（包含海报功能）
 const {
   mediaTitle,
@@ -340,6 +485,11 @@ const { localVisible } = useDialog({
   resetOnOpen: true,
 });
 
+// 判断是否为电视剧
+const isTV = computed(() => {
+  return result.value?.media_type === "TV";
+});
+
 // 双向绑定visible属性
 const computedVisible = computed({
   get: () => props.visible,
@@ -359,12 +509,13 @@ watch(localVisible, (newVal) => {
   computedVisible.value = newVal;
 });
 
-// 监听对话框打开，重置表单
+// 监听对话框打开，重置表单和标签页
 watch(
   () => props.visible,
   (newVal) => {
     if (newVal) {
       resetState();
+      activeTab.value = "basic"; // 重置到基本信息标签页
     }
   }
 );
@@ -377,6 +528,8 @@ const handleRecognize = async () => {
   // 如果需要在识别成功时执行某些操作，可以在这里添加
   if (recognitionResult.state === "success" && recognitionResult.result) {
     console.log("识别成功，结果已显示在弹窗中");
+    // 重置到基本信息标签页
+    activeTab.value = "basic";
     // 可以选择性地触发 success 事件，但不关闭弹窗
     // emit("success", recognitionResult.result);
   }
