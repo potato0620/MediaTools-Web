@@ -41,7 +41,9 @@
       <!-- 成功结果 -->
       <v-card v-if="result && result.title" class="elevation-1">
         <v-card-title class="d-flex align-center bg-success py-2">
-          <v-icon class="mr-2 text-white">mdi-check-circle</v-icon>
+          <v-icon class="mr-2 text-white">{{
+            isTV ? "mdi-television-classic" : "mdi-movie"
+          }}</v-icon>
           <div class="text-white">
             <div class="text-h6">{{ result.title }}</div>
             <div class="text-caption">
