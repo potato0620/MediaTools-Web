@@ -13,6 +13,7 @@ export interface MediaItem {
   tvdb_id: number; // TVDB ID
 
   // 资源相关信息
+  customization: string[]; // 自定义词
   release_groups: string[]; // 发布组
   version: number; // 版本号
   platform: string; // 流媒体平台
